@@ -51,9 +51,12 @@ class SpiderDatasetReader(DatasetReader):
 
     @overrides
     def _read(self, file_path: str):
-        if not file_path.endswith('.json'):
+        if file_path.endswith('.json'):
+            yield from self._read_examples_file(file_path)
+        else:
             raise ConfigurationError(f"Don't know how to read filetype of {file_path}")
 
+    def _read_examples_file(self, file_path: str):
         cache_dir = os.path.join('cache', file_path.split("/")[-1])
 
         if self._load_cache:
@@ -73,6 +76,7 @@ class SpiderDatasetReader(DatasetReader):
                 if self._load_cache:
                     try:
                         ins = dill.load(open(cache_filepath, 'rb'))
+                        ins = self.process_instance(ins, total_cnt)
                         if ins is None and not self._keep_if_unparsable:
                             # skip unparsed examples
                             continue
@@ -85,8 +89,6 @@ class SpiderDatasetReader(DatasetReader):
 
                 query_tokens = None
                 if 'query_toks' in ex:
-                    # we only have 'query_toks' in example for training/dev sets
-
                     # fix for examples: we want to use the 'query_toks_no_value' field of the example which anonymizes
                     # values. However, it also anonymizes numbers (e.g. LIMIT 3 -> LIMIT 'value', which is not good
                     # since the official evaluator does expect a number and not a value
@@ -110,6 +112,7 @@ class SpiderDatasetReader(DatasetReader):
                     utterance=ex['question'],
                     db_id=ex['db_id'],
                     sql=query_tokens)
+                ins = self.process_instance(ins, total_cnt)
                 if ins is not None:
                     cnt += 1
                 if self._save_cache:
@@ -130,8 +133,8 @@ class SpiderDatasetReader(DatasetReader):
                                                 db_context.tokenized_utterance,
                                                 self._utterance_token_indexers,
                                                 entity_tokens=db_context.entity_tokens,
-                                                include_in_vocab=False,  # TODO: self._use_table_for_vocab,
-                                                max_table_tokens=None)  # self._max_table_tokens)
+                                                include_in_vocab=False,
+                                                max_table_tokens=None)
 
         world = SpiderWorld(db_context, query=sql)
         fields["utterance"] = TextField(db_context.tokenized_utterance, self._utterance_token_indexers)
@@ -171,3 +174,6 @@ class SpiderDatasetReader(DatasetReader):
         fields["world"] = MetadataField(world)
         fields["schema"] = table_field
         return Instance(fields)
+
+    def process_instance(self, instance: Instance, index: int):
+        return instance

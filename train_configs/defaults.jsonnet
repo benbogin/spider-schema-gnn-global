@@ -28,6 +28,7 @@ local dataset_path = "dataset/";
     "parse_sql_on_decoding": true,
     "gnn": true,
     "gnn_timesteps": 3,
+    "pruning_gnn_timesteps": 3,
     "decoder_self_attend": true,
     "decoder_use_graph_entities": true,
     "use_neighbor_similarity_for_linking": true,
@@ -71,7 +72,7 @@ local dataset_path = "dataset/";
   "trainer": {
     "num_epochs": 100,
     "cuda_device": 0,
-    "patience": 20,
+    "patience": 50,
     "validation_metric": "+sql_match",
     "optimizer": {
       "type": "adam",
