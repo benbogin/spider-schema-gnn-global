@@ -21,8 +21,7 @@ class SpiderBase(Model):
                  question_embedder: TextFieldEmbedder,
                  gnn_timesteps: int = 2,
                  dropout: float = 0.0,
-                 rule_namespace: str = 'rule_labels',
-                 scoring_dev_params: dict = None) -> None:
+                 rule_namespace: str = 'rule_labels') -> None:
         super().__init__(vocab)
         self.vocab = vocab
         self._encoder = encoder
@@ -32,7 +31,6 @@ class SpiderBase(Model):
             self._dropout = lambda x: x
         self._rule_namespace = rule_namespace
         self._question_embedder = question_embedder
-        self._scoring_dev_params = scoring_dev_params or {}
         self._entity_encoder = TimeDistributed(entity_encoder)
 
         self._action_padding_index = -1  # the padding value used by IndexField

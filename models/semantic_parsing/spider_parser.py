@@ -61,8 +61,7 @@ class SpiderParser(SpiderBase):
                  decoder_num_layers: int = 1,
                  dropout: float = 0.0,
                  rule_namespace: str = 'rule_labels') -> None:
-        super().__init__(vocab, encoder, entity_encoder, question_embedder, gnn_timesteps,
-                         pruning_gnn_timesteps, use_neighbor_similarity_for_linking, dropout, rule_namespace)
+        super().__init__(vocab, encoder, entity_encoder, question_embedder, gnn_timesteps, dropout, rule_namespace)
 
         self._max_decoding_steps = max_decoding_steps
         self._add_action_bias = add_action_bias
@@ -224,7 +223,6 @@ class SpiderParser(SpiderBase):
                                                          self._transition_function,
                                                          keep_final_unfinished_states=False)
 
-            metadata = None
             self._compute_validation_outputs(valid_actions,
                                              best_final_states,
                                              world,

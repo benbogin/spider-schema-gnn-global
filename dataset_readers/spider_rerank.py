@@ -62,11 +62,13 @@ class SpiderRerankDatasetReader(SpiderDatasetReader):
         yield from self._read_examples_file(file_path)
 
     @overrides
-    def process_instance(self, instance: Instance, index: int):
+    def process_instance(self, instance: Instance, index: int = None, candidates: List = None):
         """
         This function is called after the instance was loaded with the basic dataset reader, and adds the query
         candidates data.
         """
+        assert index is not None or candidates is not None
+
         if instance is None:
             return instance
 
@@ -83,7 +85,7 @@ class SpiderRerankDatasetReader(SpiderDatasetReader):
                 if token in world.entities_names:
                     correct_sub_graph.add(token)
 
-        original_candidates = self._sub_graphs_candidates[index]
+        original_candidates = candidates or self._sub_graphs_candidates[index]
         if self._sub_sample_candidates:
             shuffled_candidates = list(original_candidates)
             # make sure there is a correct candidate, so put them on top

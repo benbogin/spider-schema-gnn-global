@@ -47,12 +47,9 @@ class SpiderReranker(SpiderBase):
         self._metric_num_candidates = 10
         self._accuracy_metrics = dict()
 
-        self._accuracy_metrics['accuracy'] = Average()
-        self._accuracy_metrics['accuracy_single'] = Average()
-        self._accuracy_metrics['accuracy_multi'] = Average()
         self._accuracy_metrics['query_accuracy'] = Average()
-        self._accuracy_metrics['query_accuracy_single'] = Average()
-        self._accuracy_metrics['query_accuracy_multi'] = Average()
+        self._accuracy_metrics['_query_accuracy_single'] = Average()
+        self._accuracy_metrics['_query_accuracy_multi'] = Average()
 
         self._num_entity_types = 9
         self._embedding_dim = question_embedder.get_output_dim()
@@ -408,7 +405,7 @@ class SpiderReranker(SpiderBase):
         self._accuracy_metrics[key](val)
 
         if difficulty is not None:
-            key = key + '_' + ('multi' if difficulty else 'single')
+            key = '_' + key + '_' + ('multi' if difficulty else 'single')
             self._accuracy_metrics[key](val)
 
     def _compute_validation_outputs(self,
@@ -472,9 +469,6 @@ class SpiderReranker(SpiderBase):
 
             if sub_graphs_labels is not None:
                 sg_tsk_query_correct = candidates_sg_sort[0]['correct']
-
-                if max(example_sub_graphs_labels) > 0:
-                    self._update_metric('accuracy', int(sg_tsk_query_correct))
 
                 self._update_metric('query_accuracy', int(sg_tsk_query_correct), difficulty)
 
