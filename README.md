@@ -104,7 +104,9 @@ You should get results similar to the following:
 ## Trained models
 
 You can skip the above steps and download our trained models:
-[https://drive.google.com/open?id=1NdSubOVx6IsCpNvkzjTPovsIHEuuebyi]
+https://drive.google.com/open?id=1NdSubOVx6IsCpNvkzjTPovsIHEuuebyi
+
+This includes (1) the parser model, (2) the output train/dev candidates and (3) the re-ranker model. 
 
 ## Inference
 
