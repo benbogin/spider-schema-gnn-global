@@ -104,7 +104,7 @@ You should get results similar to the following:
 ## Trained models
 
 You can skip the above steps and download our trained models:
-https://drive.google.com/open?id=1NdSubOVx6IsCpNvkzjTPovsIHEuuebyi
+https://drive.google.com/file/d/1SXRzQhxoDUwtDOyELnRIS0Rg1RaAO2Q5
 
 This includes (1) the parser model, (2) the output train/dev candidates and (3) the re-ranker model. 
 
@@ -114,6 +114,8 @@ Use the following AllenNLP command to output a file with the predicted queries.
 
 This will require both models (parser and re-ranker) to exist, but will work without the candidates files (it creates
 the queries candidates in the process).
+
+__note__: Path to the re-ranker experiment directory is currently hard-coded in `predictors/spider_predictor_complete.py`
 
 ```
 allennlp predict experiments/experiment dataset/dev.json \
